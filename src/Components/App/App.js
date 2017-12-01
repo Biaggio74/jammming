@@ -1,7 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
+import SearchResults from '../SearchResults/SearchResults.js';
+import PlayList from '../PlayList/PlayList.js';
 
-class App extends Component {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playlistName: "My new playlist",
+      playlistTracks: [
+        {name: "Down to the river", artist: "Bruce Sprinsgteen", album: "River"},{name: "Down to the river", artist: "Bruce Sprinsgteen", album: "River"}],
+      searchResults: [
+        {name: "New song", artist: "James Blunt", album: "New age"}]
+    }
+  }
+  addTrack(track){
+    if (this.state.playistTracks){
+
+    }
+  }
+
+
   render() {
     return (
       <div>
@@ -9,9 +28,8 @@ class App extends Component {
       <div className="App">
     Add a SearchBar component
     <div className="App-playlist">
-      Add a SearchResults component
-       Add a Playlist component
-
+      <SearchResults searchResults={this.state.searchResults} />
+      <PlayList playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks}/>
       </div>
       </div>
       </div>
