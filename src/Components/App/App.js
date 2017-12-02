@@ -10,13 +10,15 @@ class App extends React.Component {
       playlistName: "My new playlist",
       playlistTracks: [
         {name: "Down to the river", artist: "Bruce Sprinsgteen", album: "River"},{name: "Down to the river", artist: "Bruce Sprinsgteen", album: "River"}],
-      searchResults: [
+      searchResultTracks: [
         {name: "New song", artist: "James Blunt", album: "New age"}]
-    }
-  }
-  addTrack(track){
-    if (this.state.playistTracks){
+    };
+    this.addTrack = this.addTrack.bind(this);
+  };
 
+  addTrack(track){
+    if (!this.state.playistTracks.includes(track)){
+      this.setState({playlistTracks: this.state.playlistTracks.push(track)})
     }
   }
 
@@ -28,7 +30,7 @@ class App extends React.Component {
       <div className="App">
     Add a SearchBar component
     <div className="App-playlist">
-      <SearchResults searchResults={this.state.searchResults} />
+      <SearchResults onAdd={this.addTrack} searchResults={this.state.searchResultTracks} />
       <PlayList playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks}/>
       </div>
       </div>
