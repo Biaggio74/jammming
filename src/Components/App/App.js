@@ -10,10 +10,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       playlistName: "My new playlist",
-      playlistTracks: [
-        {name: "Down to the river", artist: "Bruce Sprinsgteen", album: "River"},{name: "Down to the river", artist: "Bruce Sprinsgteen", album: "River"}],
-      searchResultTracks: [
-        {name: "New song", artist: "James Blunt", album: "New age"}]
+      playlistTracks: [],
+      searchResultTracks: []
     };
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
@@ -41,7 +39,8 @@ class App extends React.Component {
   };
 
   search(term){
-    console.log(term);
+    let tracks = Spotify.search(term)
+    this.setState({searchResultTracks: tracks});
   }
 
 
