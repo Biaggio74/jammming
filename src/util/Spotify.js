@@ -1,6 +1,6 @@
 let userAccessToken;
 const clientId = '0c188b81fcb64091bbad6f7c860289d1';
-const redirectURI = 'http://localhost:3000/'
+const redirectURI = 'http://localhost:3000'
 
 const Spotify = {
   getAccessToken() {
@@ -15,46 +15,46 @@ const Spotify = {
 
     if (accessTokenMatch && expiresInMatch ) {
       userAccessToken = accessTokenMatch[1];
-      let expTime = Number(expiresInMatch[1]);
-      let now = new Date(Date.now());
-      let expires = new Date(Date.now() + expTime * 1000)
-      window.setTimeout(() => userAccessToken = '', expTime * 1000);
-      window.history.pushState('Access Token', null, '/');
+      let expiresIn = Number(expiresInMatch[1]);
+      //let now = new Date(Date.now());
+      //let expires = new Date(Date.now() + expTime * 1000)
+      window.setTimeout(() => userAccessToken = '', expiresIn * 1000);
+      window.history.pushState('Access Token', null, '/');// This clears the parameters, allowing us to grab a new access token when it i expires
       return userAccessToken;
     } else {
-      const redirectUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`;
-      window.location.href = redirectUrl;
+      let accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectURI}`;
+      window.location = accessUrl;
     }
-
-
   },
 
   search(term){
-    this.getAccessToken();
-    term = encodeURIComponent(term.trim());
-    const url = `https://api.spotify.com/v1/search?type=track&q=${term}`;
+    //this is moved to app.js
+    //userAccessToken = this.getAccessToken();
+    //term = encodeURIComponent(term.trim());
+    let url = 'https://cors-anywhere.herokuapp.com/' + `https://api.spotify.com/v1/search?type=track&q=${term}`;
 
-    fetch(url, {
+    return fetch(url, {
       method: 'GET',
-      headers: {'Authorization': 'Bearer ' + userAccessToken}
+      headers: {Authorization: `Bearer ${userAccessToken}`}
     }).then(response => {
       if (response.ok) {
         return response.json();
-      }
+      };
       throw new Error('Request failed!!!');
     }, networkError => console.log(networkError.message)
   ).then(jsonResponse => {
     //code to execute with jsonResponse
     if (jsonResponse.tracks) {
-      return jsonResponse.tracks.map(track => ({
+      return jsonResponse.tracks.items.map(track => ({
         id: track.id,
         name: track.name,
         artist: track.artists[0].name,
         album: track.album.name,
         uri: track.uri
       }));
-    };
-
+    }
+    return [];
+    console.log(jsonResponse);
   });
 } //end of search()
 }
