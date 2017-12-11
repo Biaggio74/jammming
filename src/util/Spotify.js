@@ -41,7 +41,8 @@ const Spotify = {
         return response.json();
       };
       throw new Error('Request failed!!!');
-    }, networkError => console.log(networkError.message)
+    },
+    networkError => console.log(networkError.message)
   ).then(jsonResponse => {
     //code to execute with jsonResponse
     if (jsonResponse.tracks) {
@@ -56,7 +57,62 @@ const Spotify = {
     return [];
     console.log(jsonResponse);
   });
-} //end of search()
+}, //end of search()
+
+  savePlaylist(name,trackArray){
+    if (!name || !trackArray) {
+      return;
+    }
+      const accessToken = this.getAccessToken();
+      const headers = {
+        Authorization: `Bearer ${accessToken}`
+      }
+      let userID;
+      let playlistID;
+      //make a request that returns the users Spotify username
+      let url = 'https://cors-anywhere.herokuapp.com/' + 'https://api.spotify.com/v1/me';
+      return fetch(url, {
+        method: 'GET',
+        headers: headers
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Post Request failed!');
+      }, networkError => console.log(networkError.message)
+    ).then(jsonResponse => {
+       userID = jsonResponse.id;
+
+       fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
+         method: 'POST',
+         headers: headers,
+         body: JSON.stringify({
+           name: name
+         })
+       }).then(response => {
+         if (response.ok) {
+           return response.json();
+         }
+         throw new Error('Post Request failed!');
+       }, networkError => console.log(networkError.message)
+     ).then(jsonResponse => {
+       playlistID = jsonResponse.id;
+
+       fetch(`https://api.spotify.com/v1/users/${userID}/playlists/${playlistID}/tracks`, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          uris: trackArray
+        })
+      });
+     });
+    })
+
+
+
+
+  }
+
 }
 
 export default Spotify;

@@ -9,7 +9,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistName: "My new playlist",
+      playlistName: '',
       playlistTracks: [],
       searchResults: []
     };
@@ -45,7 +45,14 @@ class App extends Component {
   };
 
   savePlaylist(){
-    let trackURIs = this.state.playlistTracks.map(track => track.uri)
+    let trackURIs = this.state.playlistTracks.map(track => {
+      return track.uri
+    });
+    Spotify.savePlaylist(this.state.playlistName, trackURIs)
+    this.setState({
+      playlistName: 'New playlist',
+      searchResults: []
+    })
   };
 
   search(term) {
@@ -64,7 +71,10 @@ class App extends Component {
         <SearchBar onSearch={this.search} />
     <div className="App-playlist">
       <SearchResults onAdd={this.addTrack} searchResults={this.state.searchResults} />
-      <PlayList onSave={this.savePlaylist} onNameChange={this.updatePlaylistName} playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} />
+      <PlayList
+        onSave={this.savePlaylist}
+        onNameChange={this.updatePlaylistName} playlistName={this.state.playlistName} playlistTracks={this.state.playlistTracks}
+        onRemove={this.removeTrack} />
       </div>
       </div>
       </div>
